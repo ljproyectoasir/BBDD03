@@ -1,0 +1,14 @@
+TARGETS = uuidd atd irqbalance exim4 xinetd bluetooth urandom mysql sendsigs rsyslog umountnfs.sh rpcbind nfs-common networking hwclock.sh umountfs umountroot live-tools halt reboot
+mysql: exim4
+sendsigs: atd mysql uuidd bluetooth irqbalance exim4 xinetd
+rsyslog: sendsigs atd mysql bluetooth irqbalance exim4 xinetd
+umountnfs.sh: rsyslog sendsigs atd mysql uuidd bluetooth irqbalance exim4 xinetd
+rpcbind: umountnfs.sh
+nfs-common: umountnfs.sh
+networking: umountnfs.sh mysql exim4 rpcbind xinetd
+hwclock.sh: rsyslog atd mysql uuidd nfs-common
+umountfs: umountnfs.sh urandom atd mysql networking uuidd bluetooth irqbalance exim4 rpcbind hwclock.sh xinetd
+umountroot: umountfs
+live-tools: umountroot
+halt: umountroot live-tools
+reboot: umountroot live-tools
